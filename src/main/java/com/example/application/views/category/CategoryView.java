@@ -44,10 +44,10 @@ public class CategoryView extends Div implements BeforeEnterObserver {
 
     private final Button cancel = new Button("Cancel");
     private final Button save = new Button("Save");
-
+    private final Button delete = new Button("delete");
     private final BeanValidationBinder<Category> binder;
 
-    private Category category;
+    private Category categories;
 
     private final CategoryService categoryService;
 
@@ -93,13 +93,30 @@ public class CategoryView extends Div implements BeforeEnterObserver {
             refreshGrid();
         });
 
-        save.addClickListener(e -> {
+        delete.addClickListener(e -> {
             try {
                 if (this.category == null) {
-                    this.category = new Category();
+                    Notification.show("no sampleperson selected");
+                }else {
+                    binder.writeBean(this.categories);
+                    categoryService.delete(this.categories.getId());
+                    clearForm();
+                    refreshGrid();
+                    Notification.show("sampleperson details stored");
+                    UI.getCurrent().navigate(CategoryView.class);
                 }
-                binder.writeBean(this.category);
-                categoryService.update(this.category);
+            } catch (ValidationException validationException){
+                Notification.show(" An exception happened while trying to store the sampleperson details.");
+            }
+        });
+
+        save.addClickListener(e -> {
+            try {
+                if (this.categories == null) {
+                    this.categories = new Category();
+                }
+                binder.writeBean(this.categories);
+                categoryService.update(this.categories);
                 clearForm();
                 refreshGrid();
                 Notification.show("Data updated");
@@ -157,7 +174,8 @@ public class CategoryView extends Div implements BeforeEnterObserver {
         buttonLayout.setClassName("button-layout");
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        buttonLayout.add(save, delete, cancel);
         editorLayoutDiv.add(buttonLayout);
     }
 
@@ -178,8 +196,8 @@ public class CategoryView extends Div implements BeforeEnterObserver {
     }
 
     private void populateForm(Category value) {
-        this.category = value;
-        binder.readBean(this.category);
+        this.categories = value;
+        binder.readBean(this.categories);
 
     }
 }

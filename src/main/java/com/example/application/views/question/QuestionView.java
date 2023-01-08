@@ -45,7 +45,7 @@ public class QuestionView extends Div implements BeforeEnterObserver {
 
     private final BeanValidationBinder<Question> binder;
 
-    private Question question;
+    private Question questions;
 
     private final QuestionService questionService;
 
@@ -94,11 +94,11 @@ public class QuestionView extends Div implements BeforeEnterObserver {
 
         save.addClickListener(e -> {
             try {
-                if (this.question == null) {
-                    this.question = new Question();
+                if (this.questions == null) {
+                    this.questions = new Question();
                 }
-                binder.writeBean(this.question);
-                questionService.update(this.question);
+                binder.writeBean(this.questions);
+                questionService.update(this.questions);
                 clearForm();
                 refreshGrid();
                 Notification.show("Data updated");
@@ -178,8 +178,8 @@ public class QuestionView extends Div implements BeforeEnterObserver {
     }
 
     private void populateForm(Question value) {
-        this.question = value;
-        binder.readBean(this.question);
+        this.questions = value;
+        binder.readBean(this.questions);
 
     }
 }

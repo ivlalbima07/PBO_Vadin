@@ -45,7 +45,7 @@ public class SubcategoryView extends Div implements BeforeEnterObserver {
 
     private final BeanValidationBinder<Subcategory> binder;
 
-    private Subcategory subcategory;
+    private Subcategory subcategories;
 
     private final SubcategoryService subcategoryService;
 
@@ -93,11 +93,11 @@ public class SubcategoryView extends Div implements BeforeEnterObserver {
 
         save.addClickListener(e -> {
             try {
-                if (this.subcategory == null) {
-                    this.subcategory = new Subcategory();
+                if (this.subcategories == null) {
+                    this.subcategories = new Subcategory();
                 }
-                binder.writeBean(this.subcategory);
-                subcategoryService.update(this.subcategory);
+                binder.writeBean(this.subcategories);
+                subcategoryService.update(this.subcategories);
                 clearForm();
                 refreshGrid();
                 Notification.show("Data updated");
@@ -177,8 +177,8 @@ public class SubcategoryView extends Div implements BeforeEnterObserver {
     }
 
     private void populateForm(Subcategory value) {
-        this.subcategory = value;
-        binder.readBean(this.subcategory);
+        this.subcategories = value;
+        binder.readBean(this.subcategories);
 
     }
 }
