@@ -3,6 +3,7 @@ package com.example.application.views.question;
 import com.example.application.data.entity.Question;
 import com.example.application.data.service.QuestionService;
 import com.example.application.views.MainLayout;
+import com.example.application.views.category.CategoryView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -42,6 +43,7 @@ public class QuestionView extends Div implements BeforeEnterObserver {
 
     private final Button cancel = new Button("Cancel");
     private final Button save = new Button("Save");
+    private final Button delete = new Button("delete");
 
     private final BeanValidationBinder<Question> binder;
 
@@ -90,6 +92,23 @@ public class QuestionView extends Div implements BeforeEnterObserver {
         cancel.addClickListener(e -> {
             clearForm();
             refreshGrid();
+        });
+
+        delete.addClickListener(e -> {
+            try {
+                if (this.questions == null) {
+                    Notification.show("no sampleperson selected");
+                }else {
+                    binder.writeBean(this.questions);
+                    questionService.delete(this.questions.getId());
+                    clearForm();
+                    refreshGrid();
+                    Notification.show("sampleperson details stored");
+                    UI.getCurrent().navigate(QuestionView.class);
+                }
+            } catch (ValidationException validationException){
+                Notification.show(" An exception happened while trying to store the sampleperson details.");
+            }
         });
 
         save.addClickListener(e -> {
@@ -157,7 +176,8 @@ public class QuestionView extends Div implements BeforeEnterObserver {
         buttonLayout.setClassName("button-layout");
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        buttonLayout.add(save, delete, cancel);
         editorLayoutDiv.add(buttonLayout);
     }
 
